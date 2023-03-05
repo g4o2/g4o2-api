@@ -5,17 +5,37 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
 const fs = require('fs');
-/*
+
 app.get('/', (req, res) => {
-    data = { "msg": "Welcome to g4o2-chat socket.io api" };
+    data = [
+        { "message": "Welcome to g4o2-chat socket.io api" },
+        { "message": "go to /messages to see the chatlog"}
+    ];
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(data, null, 3));
-
 });
-*/
+
+app.get('/messages', (req, res) => {
+    fs.readFile('./chatlog.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        data = data + "]";
+        data = JSON.parse(data);
+        
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify(data, null, 3));
+    });
+});
+
+
+
+/*
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
+*/
 
 io.on('connection', (socket) => {
     socket.on('user-connect', (username) => {
@@ -30,7 +50,6 @@ io.on('connection', (socket) => {
         console.log(messageDetails);
         let data = JSON.stringify(messageDetails);
         data = ",\r\n" + data;
-        // data = data.concat(",");
         fs.appendFile('./chatlog.json', data, err => {
             if (err) {
                 console.error(err);
