@@ -24,13 +24,28 @@
     var submitBtn = document.getElementById('send');
     do {
       username = prompt('Username');
-    } while (username.match(/[^a-zA-Z0-9_]+/g))
+    } while (username.match(/[^a-zA-Z0-9_]+/g) || username == "")
     if (username) {
     	socket.emit('user-connect', username);
       socket.emit('load-messages', username);
     }
     socket.on('load-messages', function (data) {
-        alert(data);
+        console.log(data);
+        for(let i = 0; i < data.length; i++) {
+          let pfpLink = '#';
+          let item = document.createElement('div');
+          let username = data[i]['username'];
+          let date = data[i]['date'];
+          date.toLocaleString();
+          let message = data[i]['message'];
+          let messageFiltered = message.replace(/[\u00A0-\u9999<>\&]/g, function (i) {
+            return '&#' + i.charCodeAt(0) + ';';
+          });
+          item.innerHTML = `<div class='message-container'><p class='message-info'>${username} ${date}</p><p class='message'><span style='word-wrap: break-word;'>${messageFiltered}</span></p></div>`;
+          messages.appendChild(item);
+          let chat = document.getElementById('messages')
+          chat.scrollTop = chat.scrollHeight;
+        }
     })
 		
 		socket.on('user-connect', function (username) {
@@ -47,33 +62,29 @@
 		function replaceAll(str, find, replace) {
 			return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
 		}
-		socket.on('message-submit', function (messageDetails) {
-			let pfpLink = '#';
-			let item = document.createElement('div');
-			let username = messageDetails.username;
-			let date = messageDetails.date;
-			date.toLocaleString();
-			let message = messageDetails.message;
-			let messageFiltered = message.replace(/[\u00A0-\u9999<>\&]/g, function (i) {
-				return '&#' + i.charCodeAt(0) + ';';
-			});
-			item.innerHTML = `<div class='message-container'><p class='message-info'>${username} ${date}</p><p class='message'><span style='word-wrap: break-word;'>${messageFiltered}</span></p></div>`;
-			messages.appendChild(item);
-			let chat = document.getElementById('messages')
-			chat.scrollTop = chat.scrollHeight;
-			submitBtn.classList.add('not-allowed');
-			setTimeout(() => {
-				submitBtn.classList.remove('not-allowed');
-			}, "3000")
-		});
+    socket.on('message-submit', function (messageDetails) {
+      let pfpLink = '#';
+      let item = document.createElement('div');
+      let username = messageDetails.username;
+      let date = messageDetails.date;
+      date.toLocaleString();
+      let message = messageDetails.message;
+      let messageFiltered = message.replace(/[\u00A0-\u9999<>\&]/g, function (i) {
+        return '&#' + i.charCodeAt(0) + ';';
+      });
+      item.innerHTML = `<div class='message-container'><p class='message-info'>${username} ${date}</p><p class='message'><span style='word-wrap: break-word;'>${messageFiltered}</span></p></div>`;
+      messages.appendChild(item);
+      let chat = document.getElementById('messages')
+      chat.scrollTop = chat.scrollHeight;
+    });
 		
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       if (input.value) {
         let date = new Date().toLocaleString();
         messageDetails = {
-          username: replaceAll(username, '<', ''),
-          message: replaceAll(input.value, '<', ''),
+          username: replaceAll(username, '<', '<'),
+          message: replaceAll(input.value, '<', '<'),
           date: date
         }
         socket.emit('message-submit', messageDetails);

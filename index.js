@@ -5,17 +5,17 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
 const fs = require('fs');
-
+/*
 app.get('/', (req, res) => {
     data = { "msg": "Welcome to g4o2-chat socket.io api" };
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(data, null, 3));
 
 });
-
-/*app.get('/', (req, res) => {
+*/
+app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
-});*/
+});
 
 io.on('connection', (socket) => {
     socket.on('user-connect', (username) => {
@@ -29,7 +29,8 @@ io.on('connection', (socket) => {
         io.emit('message-submit', messageDetails);
         console.log(messageDetails);
         let data = JSON.stringify(messageDetails);
-        data = data.concat(",\r\n");
+        data = ",\r\n" + data;
+        // data = data.concat(",");
         fs.appendFile('./chatlog.json', data, err => {
             if (err) {
                 console.error(err);
@@ -37,8 +38,16 @@ io.on('connection', (socket) => {
         });
     });
     socket.on('load-messages', (username) => {
-        let rows = "load chat";
-        io.emit('load-messages', rows);            
+        fs.readFile('./chatlog.json', 'utf8', (err, data) => {
+            if (err) {
+                console.error(err);
+                return;
+            }
+            data = data + "]";
+            data = JSON.parse(data);
+            console.log(data);
+            io.emit('load-messages', data);            
+        });
     })
 })
 
