@@ -6,6 +6,11 @@ const { Server } = require("socket.io");
 const io = new Server(server);
 const fs = require('fs');
 
+app.use(function (req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', 'https://php-sql-chat.maxhu787.repl.co/')
+    next();
+});
+
 app.get('/', (req, res) => {
     data = [
         { "message": "Welcome to g4o2-chat socket.io api" },
