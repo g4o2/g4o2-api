@@ -2,23 +2,10 @@ const express = require('express');
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
-// const { Server } = require("socket.io");
-const socketIO = require('socket.io');
-// const io = new Server(server);
+const { Server } = require("socket.io");
+const io = new Server(server);
 const fs = require('fs');
-const io = socketIO(3000, {
-    // Now, the CORS config.
-    // You could either use the new `cors` property...
-    cors: {
-        origin: "https://php-sql-chat.maxhu787.repl.co/",
-        methods: ["GET", "POST"],
-        allowedHeaders: ["content-type"]
-    },
-    // ...Or the old `allowRequest` function.
-    allowRequest: function (req, callback) {
-        callback(null, req.headers.referer.startsWith("https://php-sql-chat.maxhu787.repl.co/"));
-    }
-});
+
 /*
 app.use('/\*', function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*")
