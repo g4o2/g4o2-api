@@ -5,8 +5,7 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
 const fs = require('fs');
-const cors = require('cors');
-/*
+
 app.use('/\*', function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*")
     res.header("Access-Control-Allow-Headers", "Content-Type")
@@ -14,17 +13,7 @@ app.use('/\*', function (req, res, next) {
     res.header("Access-Control-Allow-Credentials", "true")
     next()
 })
-*/
-var whitelist = ['https://php-sql-chat.maxhu787.repl.co/', 'https://g4o2.maxhu787.repl.co/']
-var corsOptions = {
-    origin: function (origin, callback) {
-        if (whitelist.indexOf(origin) !== -1) {
-            callback(null, true)
-        } else {
-            callback(new Error('Not allowed by CORS'))
-        }
-    }
-}
+
 
 app.get('/', (req, res) => {
     data = [
