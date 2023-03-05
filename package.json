@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/g4o2/g4o2-api#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.18.2",
     "socket.io": "^4.6.1"
   }
