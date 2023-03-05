@@ -6,10 +6,13 @@ const { Server } = require("socket.io");
 const io = new Server(server);
 const fs = require('fs');
 
-app.use(function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', 'https://php-sql-chat.maxhu787.repl.co/')
-    next();
-});
+app.use('/\*', function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*")
+    res.header("Access-Control-Allow-Headers", "Content-Type")
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT")
+    res.header("Access-Control-Allow-Credentials", "true")
+    next()
+})
 
 app.get('/', (req, res) => {
     data = [
@@ -34,13 +37,17 @@ app.get('/messages', (req, res) => {
     });
 });
 
-
-
 /*
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
 */
+/*
+io.engine.on("headers", (headers, req) => {
+    headers["Access-Control-Allow-Origin"] = "https://php-sql-chat.maxhu787.repl.co/";
+});
+*/
+io.origins(["https://php-sql-chat.maxhu787.repl.co/"]);
 
 io.on('connection', (socket) => {
     socket.on('user-connect', (username) => {
