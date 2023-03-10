@@ -7,7 +7,7 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server, {
     cors: {
-        origin: ['http://localhost:*', 'https://php-sql-chat.maxhu787.repl.co:*', 'https://localhost:*']
+        origin: ['http://localhost/', 'https://php-sql-chat.maxhu787.repl.co:*', 'http://localhost:*']
     }
 });
 //mysql connection
