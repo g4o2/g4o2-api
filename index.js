@@ -8,7 +8,7 @@ const { Server } = require("socket.io");
 const io = new Server(server, {
     cors: {
         // origin: ['https://php-sql-chat.maxhu787.repl.co:*', 'http://localhost:*']
-        origin: ['http://localhost']
+        origin: ['http://localhost', 'http://127.0.0.1:5500']
     }
 });
 //mysql connection
@@ -44,7 +44,8 @@ app.get('/', (req, res) => {
         { "directories": [
                 "/messages",
                 "/db/users",
-                "/db/messages"
+                "/db/messages",
+                "/db/chatlog"
             ]
         }
     ];
@@ -70,7 +71,8 @@ app.get('/db', (req, res) => {
     data = [
         {"directories": [
                 "/db/users",
-                "/db/messages"
+                "/db/messages",
+                "/db/chatlog"
             ]
         }
     ]
@@ -134,7 +136,7 @@ app.get('/db/users/:userId', (req, res) => {
     });
 });
 
-app.get('/db/test', (req, res) => {
+app.get('/db/chatlog', (req, res) => {
     var sql = 'SELECT * FROM chatlog';
     con.query(sql, function (err, responce) {
         if (err) console.log(error);
