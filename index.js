@@ -7,26 +7,28 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server, {
     cors: {
-        origin: ['https://php-sql-chat.maxhu787.repl.co:*', 'http://localhost:*']
+        // origin: ['https://php-sql-chat.maxhu787.repl.co:*', 'http://localhost:*']
+        origin: ['http://localhost']
     }
 });
 //mysql connection
-/*
+
     let con = mysql.createConnection({
     host: 'localhost',
     user: 'g4o2',
     database: 'sql12561191',
     password: 'g4o2'
 });
-*/
+
+/*
 var con = mysql.createConnection({
     host: 'sql12.freemysqlhosting.net',
     user: 'sql12561191',
     database: 'sql12561191',
     password: process.env.DB_PASS
 });
+*/
 
-/*
 app.use('/\*', function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*")
     res.header("Access-Control-Allow-Headers", "Content-Type")
@@ -34,7 +36,7 @@ app.use('/\*', function (req, res, next) {
     res.header("Access-Control-Allow-Credentials", "true")
     next()
 })
-*/
+
 //express api
 app.get('/', (req, res) => {
     data = [
@@ -136,13 +138,6 @@ app.get('/db/test', (req, res) => {
     var sql = 'SELECT * FROM chatlog';
     con.query(sql, function (err, responce) {
         if (err) console.log(error);
-        // data = {
-        //     "user_id": responce[0]['user_id'],
-        //     "username": responce[0]['username'],
-        //     "name": responce[0]['name'],
-        //     "email": email,
-        //     "about": responce[0]['about']
-        // };
         data = {
             responce
         };
@@ -171,18 +166,6 @@ io.on('connection', (socket) => {
             }
         });
     });
-    socket.on('load-messages', (username) => {
-        fs.readFile('./chatlog.json', 'utf8', (err, data) => {
-            if (err) {
-                console.error(err);
-                return;
-            }
-            data = data + "]";
-            data = JSON.parse(data);
-            console.log(data);
-            io.emit('load-messages', data);            
-        });
-    })
 })
 
 server.listen(3000, () => {
